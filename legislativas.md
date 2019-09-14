@@ -14,7 +14,7 @@
 
 ## **Pessoas-Animais-Natureza** (PAN)
 
-[Versão Web](https://pan.com.pt/eleicoes/eleicoes-legislativas-2019/programa-eleitoral/) | [Lista Candidatos](https://www.pan.com.pt/pan-anuncia-cabecas-de-lista-para-as-eleicoes-legislativas/)
+[Versão Web](https://pan.com.pt/eleicoes/eleicoes-legislativas-2019/programa-eleitoral/) | [Versão PDF](https://pan.com.pt/files/uploads/2019/09/ProgramaPAN_Impressao_Legislastivas2019.pdf) | [Lista Candidatos](https://www.pan.com.pt/pan-anuncia-cabecas-de-lista-para-as-eleicoes-legislativas/)
 
 ---
 
@@ -26,7 +26,7 @@
 
 ## **Partido Socialista** (PS)
 
-[Versão PDF](https://gabinetedeestudos.ps.pt/wp-content/uploads/2019/07/Programa-Eleitoral-PS-2019.pdf) | [Lista Candidatos](https://ps.pt/index.php/2019/07/23/candidatos-a-deputados-pelo-partido-socialista/) 
+[Versão Web](https://todosdecidem.ps.pt/)| [Versão PDF](https://gabinetedeestudos.ps.pt/wp-content/uploads/2019/07/Programa-Eleitoral-PS-2019.pdf) | [Lista Candidatos](https://ps.pt/index.php/2019/07/23/candidatos-a-deputados-pelo-partido-socialista/) 
 
 ---
 
