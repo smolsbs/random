@@ -26,7 +26,7 @@
 
 ## **Partido Socialista** (PS)
 
-[Versão Web](https://todosdecidem.ps.pt/)| [Versão PDF](https://gabinetedeestudos.ps.pt/wp-content/uploads/2019/07/Programa-Eleitoral-PS-2019.pdf) | [Lista Candidatos](https://ps.pt/index.php/2019/07/23/candidatos-a-deputados-pelo-partido-socialista/) 
+[Versão Web](https://todosdecidem.ps.pt/) | [Versão PDF](https://gabinetedeestudos.ps.pt/wp-content/uploads/2019/07/Programa-Eleitoral-PS-2019.pdf) | [Lista Candidatos](https://ps.pt/index.php/2019/07/23/candidatos-a-deputados-pelo-partido-socialista/) 
 
 ---
 
@@ -54,7 +54,7 @@
 
 ## **Centro Democrático Social** (CDS)
 
-[Versão Web](https://www.cds.pt/)
+[Versão Web](https://www.cds.pt/) | [Versão PDF](https://fazsentido.cds.pt/assets/programaeleitoral_legislativascds19.pdf) | [Lista Candidatos](https://fazsentido.cds.pt/candidatos.html)
 
 ---
 
