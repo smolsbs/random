@@ -2,6 +2,8 @@
 
 import sys
 import argparse
+import random
+
 try:
     import pyperclip
 except ModuleNotFoundError:
