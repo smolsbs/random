@@ -31,7 +31,7 @@ def hashMyPass(pwd, verbose=False):
     # then checks if it's a 200 GET response
     req = get('https://api.pwnedpasswords.com/range/' + hashPre)
     if req.status_code != 200:
-        print("Unable to retrieve a response. Got a {:%d} response".formar(req.status_code))
+        print("Unable to retrieve a response. Got a {:%d} response".format(req.status_code))
     if verbose:
         print(f'[*] 200 OK from api.pwnedpasswords.com')
     # splits every hash got from the server and iterates over it, checking against our password hash
