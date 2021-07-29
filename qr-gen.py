@@ -51,8 +51,7 @@ class QrDisplay(QWidget):
             return '/tmp/'
         elif plat == 'win32':
             return os.getenv('TMP')
-            
-    
+           
     def showUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
@@ -63,7 +62,6 @@ class QrDisplay(QWidget):
         self.resize(pixmap.width(), pixmap.height())
 
         self.show()
-
 
     def makeQrImage(self, data=None):
         """Creates the QR code.
@@ -91,22 +89,30 @@ class QrDisplay(QWidget):
 
     def getClipboard(self):
         self.data = pyperclip.paste()
+    
+    def getFileContent(self, fn):
+        with open(fn, 'r') as fp:
+            self.data = fp.read()
 
 if __name__ == '__main__':
     args = argparse.ArgumentParser()
     req = args.add_mutually_exclusive_group(required=True)
     req.add_argument('-t','--text', dest='text', action='store')
     req.add_argument('-c', '--clipboard', dest='clip', action='store_true')
-
+    req.add_argument('-f', '--file', dest='file', action='store')
+    
     p = args.parse_args()
 
     app = QApplication(sys.argv)
     ex = QrDisplay()
     
     if p.text:
-        ex.makeQrImage(p.text)
+        ex.makeQrImage(data=p.text)
     elif p.clip:
         ex.getClipboard()
+        ex.makeQrImage()
+    elif p.file:
+        ex.getFileContent(p.file)
         ex.makeQrImage()
         
     ex.showUI()
