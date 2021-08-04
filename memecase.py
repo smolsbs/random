@@ -10,17 +10,29 @@ except ModuleNotFoundError:
     print("Module pyperclip not installed. Use `pip install pyperclip` to use this scrip.")
     sys.exit(1)
 
+def getFileContent(fn):
+    with open(fn, 'r') as fp:
+        return fp.read()
 
 def main(content, n = 1, rand=False, verbose=False):
-    content = list(content)
+    content = content.split(' ')
+    print(content)
+    cnt = 0
+    
     for i in range(len(content)):
-        if rand:
-            if random.random() > 0.5:
-                content[i] = content[i].upper()
-        else:
-            if i % (n + 1) == 0:
-                content[i] = content[i].upper()
-    content = ''.join(content)
+        new_word = list(content[i])
+        for j in range(len(new_word)):    
+            if rand:
+                if random.random() > 0.5:
+                    new_word[j] = new_word[j].upper()
+            else:
+                if cnt % (n + 1) == 0:
+                    new_word[j] = new_word[j].upper()
+                    cnt += 1
+                    print(cnt)
+        content[i] = ''.join(new_word)
+        
+    content = ' '.join(content)
 
     pyperclip.copy(content)
 
@@ -40,6 +52,7 @@ if __name__ == "__main__":
     parser.add_argument('-n', dest='pattern', metavar='N', action='store', default=1, type=int, help='Changes the pattern \
         for when to change to a upper')
     parser.add_argument('-v', '--verbose', action='store_true', help='Specify if you want to print out the result.')
+    parser.add_argument('-f', '--file', dest='file', action='store', help='gets text from a file')
     args = parser.parse_args()
 
 
@@ -47,6 +60,8 @@ if __name__ == "__main__":
         content = args.text
     elif args.clip:
         content = pyperclip.paste().lower()
+    elif args.file:
+        content = getFileContent(args.file)
     else:
         parser.print_help()
     main(content, n=args.pattern, rand=args.random, verbose=args.verbose)
