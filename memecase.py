@@ -14,24 +14,22 @@ def getFileContent(fn):
     with open(fn, 'r') as fp:
         return fp.read()
 
-def main(content, n = 1, rand=False, verbose=False):
+def main(content: str, n:int = 1, rand:bool=False, verbose:bool=False) -> None:
     content = content.split(' ')
-    print(content)
     cnt = 0
-    
+
     for i in range(len(content)):
         new_word = list(content[i])
-        for j in range(len(new_word)):    
+        for j in range(len(new_word)):
             if rand:
                 if random.random() > 0.5:
                     new_word[j] = new_word[j].upper()
             else:
                 if cnt % (n + 1) == 0:
                     new_word[j] = new_word[j].upper()
-                    cnt += 1
-                    print(cnt)
+            cnt += 1
         content[i] = ''.join(new_word)
-        
+
     content = ' '.join(content)
 
     pyperclip.copy(content)
