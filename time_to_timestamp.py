@@ -2,6 +2,15 @@
 
 import argparse
 from datetime import datetime
+from math import floor
+from sys import exit
+
+try:
+    import pyperclip
+except ModuleNotFoundError:
+    print("Module pyperclip not installed. Use `pip install pyperclip` to use this scrip.")
+    exit(1)
+
 
 AVAL_FLAGS = {'t': r'%I:%M %p',
               'T': r'%I:%M:%S %p',
@@ -13,7 +22,7 @@ AVAL_FLAGS = {'t': r'%I:%M %p',
 
 def to_relative(_ts: int):
     _delta = datetime.fromtimestamp(_ts) - datetime.today()
-    
+
     print(_delta.days)
     if _delta.days > 1:
         asdf = datetime.strptime(str(_delta), "%j days, %H:%M:%S.%f")
@@ -21,7 +30,7 @@ def to_relative(_ts: int):
         asdf = datetime.strptime(str(_delta), "%j day, %H:%M:%S.%f")
     else:
         asdf = datetime.strptime(str(_delta), "%H:%M:%S.%f")
-    
+
     if asdf.month > 1:
         _str = f'in {asdf.month} months'
     elif asdf.month == 1 and asdf.day > 1 :
@@ -36,8 +45,13 @@ def to_relative(_ts: int):
         _str = f'in {asdf.minute} minutes'
     elif asdf.hour < 1 and asdf.minute <= 1:
         _str = f'in {asdf.minute} minute'
-    
+
     return _str
+
+def convert_time_to_ts(_time):
+    _t = datetime.fromisoformat(' '.join(_time))
+
+    return floor(_t.timestamp())
 
 
 def construct_ts(_ts: int, flags: list) -> list:
@@ -60,10 +74,12 @@ def main(_args):
     _flags = parse_flags(_args.flags)
     _ts = convert_time_to_ts(_args.time)
     ts_list = construct_ts(_ts, _flags)
-    if _args.verbose:
-        pretty_print(ts_list)
+    # if _args.verbose:
+    #     pretty_print(ts_list)
 
-    print(' '.join(ts_list))
+    _ret = ' '.join(ts_list)
+    pyperclip.copy(_ret)
+    print(_ret)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
