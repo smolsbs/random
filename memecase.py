@@ -43,7 +43,7 @@ def main(content: str, n:int = 1, rand:bool=False, verbose:bool=False) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--text', dest='text', action='store', help='')
+    parser.add_argument('-t', '--text', dest='text', action='store_true', help='')
     parser.add_argument('-c', '--clipboard', dest='clip', action='store_true', help='Get content from clipboard')
     parser.add_argument('-r', '--random', dest='random', action='store_true', help='Randomizes the pattern of \
         lower and upper cases')
@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
 
     if args.text:
-        content = args.text
+        content = input("Please enter what you want to memefy: ")
     elif args.clip:
         content = pyperclip.paste().lower()
     elif args.file:
