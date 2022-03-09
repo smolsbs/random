@@ -20,6 +20,8 @@ AVAL_FLAGS = {'t': r'%I:%M %p',
               'F': r'%A, %d %B, %Y %I:%M %p',
               'R': r''}
 
+# TODO: This is for verbose arg, but relative timestamps are a major pain
+#       so it's still not 100% implemented
 def to_relative(_ts: int):
     _delta = datetime.fromtimestamp(_ts) - datetime.today()
 
@@ -53,6 +55,10 @@ def convert_time_to_ts(_time):
 
     return floor(_t.timestamp())
 
+def help_print_flag_meanings():
+    _help = "t: short time; T: long time; d: short date; D: long date; f: long date with short time; F: long date with day of the week and short time; R: relative time"
+    return _help
+
 
 def construct_ts(_ts: int, flags: list) -> list:
     _aux = []
@@ -78,17 +84,18 @@ def main(_args):
     #     pretty_print(ts_list)
 
     _ret = ' '.join(ts_list)
-    pyperclip.copy(_ret)
     print(_ret)
+    pyperclip.copy(_ret)
+    print("Timestamps copied to clipboard.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('time', nargs='+' ,action='store',
-                        help="Input the datetime to convert, using the ISO format.")
+                        help="Input the datetime to convert, using the ISO format. (YYYY-mm-dd HH:mm[:ss])")
     parser.add_argument('-f', '--flags', action='store', type=str, required=True,
-                        help='Valid flags  tTdDfFR')
+                        help=f"Can be a string of multiple flags.\nAvaliable flags: {help_print_flag_meanings()}")
 
-    parser.add_argument('-v', '--verbose', action='store_true')
+    # parser.add_argument('-v', '--verbose', action='store_true')
 
     args = parser.parse_args()
     main(args)
