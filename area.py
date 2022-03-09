@@ -1,6 +1,9 @@
+import argparse
+import argparse
 import sys
 import subprocess
 import shlex
+from re import findall
 from shutil import which
 
 # default wacom ctl-480 width and heigh values
@@ -16,9 +19,16 @@ def set_area(_values: tuple):
         _values (tuple): list of needed values
     """
     l_w, t_h, r_w, b_h = _values
-    print("amipwned.py")
     _cmd = f"{which('xsetwacom')} --set \"{DEVICE_NAME}\" Area {l_w} {t_h} {r_w} {b_h}"
     subprocess.run(shlex.split(_cmd), capture_output=True, check=True)
+
+def check_for_tablet():
+    _cmd = f"{which('xsetwacom')} --list"
+    ret = subprocess.run(shlex.split(_cmd), capture_output=True, check=True)
+    _ret = ret.stdout.decode('utf-8')
+    if _ret == '' or len(findall(DEVICE_NAME, _ret)) == 0:
+        return False
+    return True
 
 
 def height_from_width(width: int):
@@ -65,4 +75,15 @@ def make_box(width):
 
 w = int(sys.argv[1])
 
-make_box(w)
+def main():
+    args = argparse.ArgumentParser()
+    args.add_argument('width', action='store', type=int,)
+
+    if check_for_tablet():
+
+        parser = args.parse_args()
+        make_box(parser.width)
+
+
+main()
+
