@@ -152,13 +152,13 @@ def make_report(_report: dict, n_files: int) -> None:
 
     _fp.write(f"Number of files processed: {n_files}\n")
     _fp.write(f"{'='*30}\nGood: {len(_report[1])}\n")
-    for entry in _report[1]:
+    for entry in sorted(_report[1]) :
         _fp.write(f"\n\t{entry}")
     _fp.write(f"\n{'='*30}\nMaybe: {len(_report[0])}\n")
-    for entry in _report[0]:
+    for entry in sorted(_report[0]):
         _fp.write(f"\n\t{entry}")
     _fp.write(f"\n{'='*30}\nTrash: {len(_report[-1])}\n")
-    for entry in _report[-1]:
+    for entry in sorted(_report[-1],key=lambda x: x[0]):
         _entry, reason = entry
         _fp.write(f"\n\t{_entry} | Reason: {reason}")
 
@@ -238,7 +238,7 @@ if __name__ == "__main__":
     req_args.add_argument('-j', '--json', action='store', dest='json',
                           help='Creates a info.json file from the zip archive passed')
     # req_args.add_argument('-f', '--files', action='store', nargs='+', dest='files',
-                          help='Creates entries for the chosen files.')
+    #                       help='Creates entries for the chosen files.')
     req_args.add_argument('-F', '--folder', action='store', dest='folder')
 
     args.add_argument('-s', '--sort', action='store', )
