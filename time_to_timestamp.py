@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python
 
 import argparse
 from datetime import datetime
@@ -7,10 +7,12 @@ from sys import exit
 
 try:
     import pyperclip
+    import pytz
 except ModuleNotFoundError:
     print("Module pyperclip not installed. Use `pip install pyperclip` to use this scrip.")
     exit(1)
 
+DFT_TZ = "Europe/Lisbon"        # Change this to your local timezone
 
 AVAL_FLAGS = {'t': r'%I:%M %p',
               'T': r'%I:%M:%S %p',
@@ -20,82 +22,58 @@ AVAL_FLAGS = {'t': r'%I:%M %p',
               'F': r'%A, %d %B, %Y %I:%M %p',
               'R': r''}
 
-# TODO: This is for verbose arg, but relative timestamps are a major pain
-#       so it's still not 100% implemented
-def to_relative(_ts: int):
-    _delta = datetime.fromtimestamp(_ts) - datetime.today()
 
-    print(_delta.days)
-    if _delta.days > 1:
-        asdf = datetime.strptime(str(_delta), "%j days, %H:%M:%S.%f")
-    elif _delta.days == 1:
-        asdf = datetime.strptime(str(_delta), "%j day, %H:%M:%S.%f")
+def convert_time_to_ts(time: str, tz: str=None) -> int: 
+    dumb_time = datetime.fromisoformat(' '.join(time))
+    
+    local_tz = pytz.timezone(DFT_TZ)
+    if tz:
+        remote_tz = pytz.timezone(tz)
+        loc_time = remote_tz.localize(dumb_time).astimezone(local_tz)
     else:
-        asdf = datetime.strptime(str(_delta), "%H:%M:%S.%f")
-
-    if asdf.month > 1:
-        _str = f'in {asdf.month} months'
-    elif asdf.month == 1 and asdf.day > 1 :
-        _str = f'in {asdf.day} days'
-    elif asdf.day == 1 and _delta.days > 0:
-        _str = f'in {asdf.day + 1} days'
-    elif asdf.day == 1 and _delta.days == 0 and asdf.hour > 1:
-        _str = f'in {asdf.hour} hours'
-    elif asdf.day == 1 and asdf.hour == 1:
-        _str = f'in {asdf.hour} hour'
-    elif asdf.hour < 1 and asdf.minute > 1:
-        _str = f'in {asdf.minute} minutes'
-    elif asdf.hour < 1 and asdf.minute <= 1:
-        _str = f'in {asdf.minute} minute'
-
-    return _str
-
-def convert_time_to_ts(_time):
-    _t = datetime.fromisoformat(' '.join(_time))
-
-    return floor(_t.timestamp())
+        loc_time = local_tz.localize(dumb_time)
+    
+    return floor(loc_time.timestamp())
 
 def help_print_flag_meanings():
-    _help = "t: short time; T: long time; d: short date; D: long date; f: long date with short time; F: long date with day of the week and short time; R: relative time"
-    return _help
+    help = "t: short time; T: long time; d: short date; D: long date; f: long date with short time; F: long date with day of the week and short time; R: relative time"
+    return help
 
 
-def construct_ts(_ts: int, flags: list) -> list:
-    _aux = []
+def construct_ts(ts: int, flags: list) -> list:
+    aux = []
     for flag in flags:
-        _aux.append(f'<t:{_ts}:{flag}>')
+        aux.append(f'<t:{ts}:{flag}>')
 
-    return _aux
+    return aux
 
-def parse_flags(_flags: str) -> list:
+def parse_flags(flags: str) -> list:
     parsed_flags = []
-    for _f in _flags:
+    for _f in flags:
         if _f not in AVAL_FLAGS.keys():
             raise Exception(f'{_f} is not a valid flag. See example for valid flags.')
         parsed_flags.append(_f)
     return parsed_flags
 
 
-def main(_args):
-    _flags = parse_flags(_args.flags)
-    _ts = convert_time_to_ts(_args.time)
-    ts_list = construct_ts(_ts, _flags)
-    # if _args.verbose:
-    #     pretty_print(ts_list)
+def main(args: argparse.Namespace) -> None:
+    flags = parse_flags(args.flags)
+    ts = convert_time_to_ts(args.time, args.timezone)
 
-    _ret = ' '.join(ts_list)
-    print(_ret)
-    pyperclip.copy(_ret)
+    ts_list = construct_ts(ts, flags)
+
+    ret = ' '.join(ts_list)
+    print(ret)
+    pyperclip.copy(ret)
     print("Timestamps copied to clipboard.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('time', nargs='+' ,action='store',
                         help="Input the datetime to convert, using the ISO format. (YYYY-mm-dd HH:mm[:ss])")
+    parser.add_argument('--timezone', '-tz', action='store', type=str, default=None)
     parser.add_argument('-f', '--flags', action='store', type=str, required=True,
                         help=f"Can be a string of multiple flags.\nAvaliable flags: {help_print_flag_meanings()}")
-
-    # parser.add_argument('-v', '--verbose', action='store_true')
 
     args = parser.parse_args()
     main(args)
