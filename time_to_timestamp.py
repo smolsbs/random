@@ -39,7 +39,6 @@ def help_print_flag_meanings():
     help = "t: short time; T: long time; d: short date; D: long date; f: long date with short time; F: long date with day of the week and short time; R: relative time"
     return help
 
-
 def construct_ts(ts: int, flags: list) -> list:
     aux = []
     for flag in flags:
@@ -47,19 +46,16 @@ def construct_ts(ts: int, flags: list) -> list:
 
     return aux
 
-def parse_flags(flags: str) -> list:
-    parsed_flags = []
-    for _f in flags:
-        if _f not in AVAL_FLAGS.keys():
-            raise Exception(f'{_f} is not a valid flag. See example for valid flags.')
-        parsed_flags.append(_f)
-    return parsed_flags
-
+def parse_flags(args: argparse.Namespace) -> set:
+    aux = vars(args)
+    flags = set(k for k,v in aux.items() if v is True)
+    if len(flags) == 0:
+        raise Exception("No flags specified")
+    return flags
 
 def main(args: argparse.Namespace) -> None:
-    flags = parse_flags(args.flags)
+    flags = parse_flags(args)
     ts = convert_time_to_ts(args.time, args.timezone)
-
     ts_list = construct_ts(ts, flags)
 
     ret = ' '.join(ts_list)
@@ -72,8 +68,14 @@ if __name__ == "__main__":
     parser.add_argument('time', nargs='+' ,action='store',
                         help="Input the datetime to convert, using the ISO format. (YYYY-mm-dd HH:mm[:ss])")
     parser.add_argument('--timezone', '-tz', action='store', type=str, default=None)
-    parser.add_argument('-f', '--flags', action='store', type=str, required=True,
-                        help=f"Can be a string of multiple flags.\nAvaliable flags: {help_print_flag_meanings()}")
+
+    parser.add_argument('-f', action='store_true', help="long date with short time")
+    parser.add_argument('-F', action='store_true', help="long date with day of the week and short time")
+    parser.add_argument('-R', action='store_true', help="relative time")
+    parser.add_argument('-t', action='store_true', help="short time")
+    parser.add_argument('-T', action='store_true', help="long time")
+    parser.add_argument('-d', action='store_true', help="short date")
+    parser.add_argument('-D', action='store_true', help="long date")
 
     args = parser.parse_args()
     main(args)
