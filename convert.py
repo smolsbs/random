@@ -1,9 +1,11 @@
 #! /usr/bin/env python3
 
 import argparse
+import concurrent.futures
 import os
 import shlex
 import sys
+import threading
 from os.path import basename, join, splitext
 from pathlib import Path
 from shutil import which
@@ -17,11 +19,6 @@ BASE_FOLDER = os.getcwd()
 
 
 class NoValidFiles(Exception):
-    """Class constructor for NoValidFiles exception
-
-    Args:
-        Exception (Expection): Buil-in class
-    """    
     def __init__(self, lyst ,message='No valid files were found to convert.'):
         self.lyst = lyst
         self.message = message
@@ -32,18 +29,6 @@ class NoValidFiles(Exception):
 
 
 def get_files(_path: str):
-    """Retrieves all the valid files from the current directory set
-
-    Args:
-        _path (str): Path for retrieving the files
-
-    Raises:
-        NoValidFiles: Error in case no valid files were found
-
-    Returns:
-        list: Array of all the files found
-    """
-  
     all_files = os.listdir(_path)
     valid_files = [f for f in all_files if splitext(f)[-1].lower() in VALID_FORMATS]
     if len(valid_files) == 0:
@@ -51,13 +36,7 @@ def get_files(_path: str):
     return sorted(valid_files)
 
 
-def convert_single_folder(_path, _format):
-    """Converts the files
-
-    Args:
-        _path (str): Path where the files are
-        _format (str): encoder to use
-    """
+def convert_single_folder(_path, _format, _n_threads):
     # TODO: copy the cover file if there's one to the output folder
 
     output_folder = join(Path(_path).parent, f"{basename(_path)} [{_format}]")
@@ -70,19 +49,26 @@ def convert_single_folder(_path, _format):
     files = get_files(_path)
 
     _enc, _args, _ext = FORMAT_BIN[_format]
-
+    pool = []
     for _f in files:
         _fname = splitext(_f)[0]
-
         old_file = join(_path, _f)
         new_file = join(_path, f"{output_folder}/{_fname}.{_ext}")
-
         _cmd = shlex.split(f'{which(_enc)} \"{old_file}\" {_args} \"{new_file}\"')
-        print(f'Converting {_f}...')
-        proc = run(_cmd, capture_output=False, check=True)
-        if proc.returncode != 0:
-            print(f'Received process return code of {proc.returncode}. Stopping...')
-            sys.exit(proc.returncode)
+        pool.append((_cmd, _fname))
+    
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=min(_n_threads,8))
+    for result in executor.map(thread_convert, pool):
+        print(result)
+
+
+def thread_convert(args):
+    _cmd, _name = args
+    proc = run(_cmd, capture_output=False, check=True)
+    if proc.returncode != 0:
+        print(f'Received process return code of {proc.returncode}. Stopping...')
+        sys.exit(proc.returncode)
+    return f'Finished converting {_name}'
 
 
 if __name__ == "__main__":
@@ -92,6 +78,11 @@ if __name__ == "__main__":
                         dest='folder',
                         action='store',
                         help='Folder to convert the files.')
+    parser.add_argument('-t', '--threads',
+                        dest='threads',
+                        action='store',
+                        default=6,
+                        type=int)
     parser.add_argument('-e', '--encoder',
                         action='store',
                         default='opus',
@@ -102,5 +93,5 @@ if __name__ == "__main__":
 
     if args.folder:
         path = join(BASE_FOLDER, args.folder)
-        convert_single_folder(path, args.encoder)
+        convert_single_folder(path, args.encoder, args.threads)
 
