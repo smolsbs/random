@@ -62,7 +62,10 @@ def dl_cover(url: str) -> None:
 
 def get_local_cover(_fp: str) -> None:
     with ZipFile(_fp,'r') as zip_file:
-        cover = zip_file.read('01.png')
+        try:
+            cover = zip_file.read('01.png')
+        except KeyError:
+            cover = zip_file.read('01.jpg')
 
     cover_fp = open('cover.png', 'wb')
     cover_fp.write(cover)
