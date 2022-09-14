@@ -11,7 +11,7 @@ except ModuleNotFoundError:
     print("Module pyperclip not installed. Use `pip install pyperclip` to use this scrip.")
     sys.exit(1)
 
-// actually randomize things every time we use the script...
+# actually randomize things every time we use the script...
 random.seed(time())
 
 
