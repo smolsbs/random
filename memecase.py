@@ -3,12 +3,17 @@
 import sys
 import argparse
 import random
+from time import time
 
 try:
     import pyperclip
 except ModuleNotFoundError:
     print("Module pyperclip not installed. Use `pip install pyperclip` to use this scrip.")
     sys.exit(1)
+
+// actually randomize things every time we use the script...
+random.seed(time())
+
 
 def getFileContent(fn):
     with open(fn, 'r') as fp:
