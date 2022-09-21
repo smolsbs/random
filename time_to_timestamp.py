@@ -47,7 +47,7 @@ def parse_flags(args: argparse.Namespace) -> list:
     flags = list(k for k,v in aux.items() if v is True)
     if len(flags) == 0:
         raise Exception("No flags specified")
-    return sorted(flags) # just for concistency sake when creating the timestamps
+    return sorted(flags, reverse=True) # just for concistency sake when creating the timestamps
 
 def main(args: argparse.Namespace) -> None:
     flags = parse_flags(args)

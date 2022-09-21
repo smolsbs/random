@@ -18,7 +18,7 @@ def renameFile(fn: list, size=12):
             sha.update(fp.read())
             f_hash = sha.hexdigest()[:size]
         print(f'{f} -> {f_hash}.{ext}')
-        move(join(parentDir, f), join(parentDir, f'{f_hash}.{ext}' ) ) 
+        move(join(parentDir, f), join(parentDir, f'{f_hash}.{ext}'))
     
     
 def getFilesInDir(_dir):
@@ -29,10 +29,22 @@ def getFilesInDir(_dir):
 def main():
     parser = argparse.ArgumentParser()
     req = parser.add_mutually_exclusive_group()
-    req.add_argument('-a', '--all', action='store_true',default=True, dest='all')
+    req.add_argument('-a', '--all',
+                    action='store_true',
+                    default=True,
+                    dest='all')
+    req.add_argument('-f', '--files',
+                        action='store',
+                        nargs='+')
     
-    parser.add_argument('-n', action='store',  default=12, dest='size')
-    parser.add_argument('-f', '--format', action='store', nargs='+')
+    parser.add_argument('-n', 
+                        action='store',
+                        default=12,
+                        dest='size')
+    parser.add_argument('-F',
+                        '--format',
+                        action='store',
+                        nargs='+')
     args = parser.parse_args()
     
     if args.all:
